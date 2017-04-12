@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
                 try {
-                    NettySocketClient.main("demo.vnpayment.vn", 20154, Ping());
+                    NettySocketClient.main("demo.vnpayment.vn", 20154, GCM());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -207,6 +207,17 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+    }
+    public String GCM() {
+        try {
+            StringBuilder v = new StringBuilder();
+            v.append(190);
+            v.append(SEPERATOR_NEW_4);
+            v.append("64565464655");
+            return v.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     //    private void signatureData(){

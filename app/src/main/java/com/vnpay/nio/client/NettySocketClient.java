@@ -22,18 +22,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 public class NettySocketClient {
 
@@ -161,13 +154,28 @@ public class NettySocketClient {
     }
 
     public static void main(String host, int port, String data) throws Exception {
-
         NettySocketClient socketClient = new NettySocketClient(host, port);
         socketClient.open();
         Log.d("Connected", "Connected: " + socketClient.openned);
         byte[] response = socketClient.sendMessage(Sign.SignData(data));
 
         Log.d("Res", new String(response, Charset.forName("UTF-8")));
+
+        byte[] allBytes = new byte[response.length];
+        System.arraycopy(response, 0, allBytes, 0, allBytes.length);
+        allBytes = AESCipher.AESFastDecrypt(allBytes, Sign.MASTER_KEY, Sign.ivAsByte);
+        String serializedObj = new String(allBytes, "UTF-8");
+        int index = serializedObj.indexOf("\u0000");
+        if (index > 0)
+            serializedObj = serializedObj.substring(0, index);
+        String[] arrSign = serializedObj.split(Sign.SEPERATOR_NEW_SIGNATURE);
+        int len = arrSign[0].length();
+        serializedObj = arrSign[0];
+        String[] arrResStr = serializedObj.split(Sign.SEPERATOR_DIFF_MESSAGE);
+        Log.d("VB", serializedObj+" ac "+arrResStr.length);
+        for(String a : arrResStr)
+            Log.d("VB", a);
+
         String dataOup = Sign.decode(response);
 
         Log.d("Res", "De: " + dataOup);

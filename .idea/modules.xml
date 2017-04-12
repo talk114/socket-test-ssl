@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NIO.iml" filepath="$PROJECT_DIR$/NIO.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/socket-test-ssl.iml" filepath="$PROJECT_DIR$/socket-test-ssl.iml" />
     </modules>
   </component>
 </project>
